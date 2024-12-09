@@ -1,0 +1,29 @@
+[
+    {
+        "$match": {
+            "imdb.rating": { "$ne": "" }
+        }
+    },
+    {
+        "$sort": { "imdb.rating": -1 }
+    },
+    {
+        "$lookup": {
+            "from": "comments",
+            "localField": "_id",
+            "foreignField": "movie_id",
+            "as": "group_of_comments"
+        }
+    },
+    {
+        "$project": {
+            "_id": 0,
+            "title": 1,
+            "imdbRating": "$imdb.rating",
+            "commentCount": { "$size": "$group_of_comments" }
+        }
+    },
+    {
+        "$limit": 5
+    }
+]
